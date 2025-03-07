@@ -1,0 +1,25 @@
+.DS_Store
+.build/
+xcuserdata/
+*.xcodeproj
+DerivedData/
+.swiftpm/
+
+# Ignore Firebase package cache
+.build/checkouts/firebase-ios-sdk/
+.build/checkouts/GoogleAppMeasurement/
+.build/checkouts/GoogleDataTransport/
+.build/checkouts/GoogleUtilities/
+.build/checkouts/abseil-cpp-binary/
+.build/checkouts/app-check/
+.build/checkouts/grpc-binary/
+.build/checkouts/gtm-session-fetcher/
+.build/checkouts/interop-ios-for-google-sdks/
+.build/checkouts/leveldb/
+.build/checkouts/nanopb/
+.build/checkouts/promises/
+.build/checkouts/swift-protobuf/
+
+# Keep other dependencies
+!.build/checkouts/SwiftSoup/
+!.build/checkouts/UtahNewsData/ 

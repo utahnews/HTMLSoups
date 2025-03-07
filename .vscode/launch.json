@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:HTMLSoups}",
+            "name": "Debug HTMLSoupsCLI",
+            "program": "${workspaceFolder:HTMLSoups}/.build/debug/HTMLSoupsCLI",
+            "preLaunchTask": "swift: Build Debug HTMLSoupsCLI"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:HTMLSoups}",
+            "name": "Release HTMLSoupsCLI",
+            "program": "${workspaceFolder:HTMLSoups}/.build/release/HTMLSoupsCLI",
+            "preLaunchTask": "swift: Build Release HTMLSoupsCLI"
+        }
+    ]
+}
