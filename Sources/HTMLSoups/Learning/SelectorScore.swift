@@ -1,3 +1,9 @@
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
+/// This file defines the scoring system for CSS selectors in HTMLSoups, tracking
+/// the effectiveness and reliability of learned selectors.
+
 import Foundation
 
 /// Represents a selector's effectiveness score
@@ -7,19 +13,21 @@ public struct SelectorScore: Codable {
     public let successCount: Int
     public let totalAttempts: Int
     public let lastUsed: Date
-    
+
     public var successRate: Double {
         return Double(successCount) / Double(totalAttempts)
     }
-    
-    public init(selector: String, confidence: Double = 1.0, successCount: Int = 0, totalAttempts: Int = 0) {
+
+    public init(
+        selector: String, confidence: Double = 1.0, successCount: Int = 0, totalAttempts: Int = 0
+    ) {
         self.selector = selector
         self.confidence = confidence
         self.successCount = successCount
         self.totalAttempts = totalAttempts
         self.lastUsed = Date()
     }
-    
+
     public func updated(success: Bool) -> SelectorScore {
         return SelectorScore(
             selector: selector,
@@ -28,4 +36,4 @@ public struct SelectorScore: Codable {
             totalAttempts: totalAttempts + 1
         )
     }
-} 
+}

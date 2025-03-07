@@ -1,5 +1,8 @@
 import Foundation
 
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file implements a robust network manager for HTMLSoups that handles all
 /// HTTP requests with browser-like behavior. It provides functionality for fetching
 /// both static and dynamic content, handling various content types, and managing

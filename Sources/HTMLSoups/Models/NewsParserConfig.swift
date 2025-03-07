@@ -1,5 +1,8 @@
 import Foundation
 
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file defines the configuration structure for parsing news content in HTMLSoups.
 /// It provides a flexible way to specify CSS selectors for different aspects of news
 /// articles, allowing for customization of how content is extracted from various

@@ -1,5 +1,8 @@
 import Foundation
 
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file implements persistent storage for learned selector patterns in HTMLSoups.
 /// It provides functionality for saving and loading selector patterns for different
 /// domains, allowing the system to maintain learned patterns between sessions.

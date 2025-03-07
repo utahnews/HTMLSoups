@@ -1,5 +1,8 @@
 import Foundation
 
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file implements a User-Agent string manager for HTMLSoups that provides
 /// rotation and management of browser-like User-Agent strings. This helps prevent
 /// detection and blocking by implementing browser-like behavior in requests.

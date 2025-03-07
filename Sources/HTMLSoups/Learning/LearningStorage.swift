@@ -1,3 +1,6 @@
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file defines the storage interface and implementation for learning data in HTMLSoups.
 /// It provides a protocol-based approach to storage, allowing for different storage
 /// implementations while maintaining a consistent interface for the learning system.

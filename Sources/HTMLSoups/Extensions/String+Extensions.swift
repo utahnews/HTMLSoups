@@ -1,3 +1,9 @@
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
+/// This file provides string manipulation utilities for HTMLSoups, extending String
+/// with methods for HTML processing and text normalization.
+///
 /// This file provides useful extensions to the String type for HTMLSoups,
 /// adding functionality for regular expression pattern matching and group
 /// extraction. These extensions are used throughout the library for text

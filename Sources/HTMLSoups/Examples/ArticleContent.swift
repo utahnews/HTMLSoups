@@ -1,3 +1,6 @@
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file provides an example implementation of HTML content parsing in HTMLSoups,
 /// demonstrating how to create a custom content model and parser configuration.
 /// It serves as both documentation and a template for implementing custom parsers.

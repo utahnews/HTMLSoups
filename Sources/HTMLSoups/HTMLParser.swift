@@ -1,3 +1,6 @@
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file implements the core HTML parsing functionality for HTMLSoups.
 /// It provides a robust parser that can handle both static and dynamic content,
 /// with support for retry mechanisms and content merging.
