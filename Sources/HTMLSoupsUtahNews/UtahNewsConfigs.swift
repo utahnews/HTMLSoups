@@ -80,4 +80,31 @@ public enum UtahNewsConfigs {
                         ]
                 )
         }
+
+        /// Configuration for KUTV News
+        public static func kutvNews() -> HTMLParser.NewsParserConfig {
+                HTMLParser.NewsParserConfig(
+                        titleSelector: ".article-header h1, .article-title, h1",
+                        contentSelector: ".article-content p, .article-body p, .article-text p",
+                        authorSelector:
+                                ".article-author, .byline, .author-name, .article-meta .author",
+                        dateSelector: "time, .article-date, .published-date, .article-meta time",
+                        imageSelectors: [
+                                ".article-image img", ".article-header img", ".article-content img",
+                                ".article-body img",
+                        ],
+                        topicSelectors: [
+                                ".article-categories a", ".article-tags a", ".topics a",
+                                ".article-meta .category",
+                        ],
+                        organizationSelectors: [
+                                ".article-content p strong", ".article-body strong",
+                                ".article-text strong",
+                        ],
+                        locationSelectors: [
+                                ".article-location", ".article-dateline", "p em:first-of-type",
+                                ".article-meta .location",
+                        ]
+                )
+        }
 }

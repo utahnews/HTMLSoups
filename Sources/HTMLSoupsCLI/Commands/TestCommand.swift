@@ -15,6 +15,8 @@ private func buildConfig(for url: URL) -> HTMLParser.NewsParserConfig {
         return UtahNewsConfigs.kslNews()
     } else if host.contains("lehifreepress.com") {
         return UtahNewsConfigs.lehiFreePress()
+    } else if host.contains("kutv.com") {
+        return UtahNewsConfigs.kutvNews()
     } else {
         // Default fallback configuration
         return HTMLParser.NewsParserConfig(
