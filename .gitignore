@@ -25,4 +25,4 @@ DerivedData/
 
 # Keep other dependencies
 !.build/checkouts/SwiftSoup/
-!.build/checkouts/UtahNewsData/ 
+!.build/checkouts/UtahNewsData/

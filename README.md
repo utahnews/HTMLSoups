@@ -1,99 +1,66 @@
 # HTMLSoups
 
-A flexible Swift library for parsing HTML content from various web pages using SwiftSoup. This library provides a clean and type-safe way to extract structured data from HTML pages with different layouts.
+HTMLSoups is an adaptive HTML parsing library for Swift that learns and adapts to different website structures. It's specifically designed to handle news content from various Utah news sites, but can be adapted for other use cases.
 
 ## Features
 
-- Async/await based HTML fetching and parsing
-- Flexible parsing configuration for different website structures
-- Type-safe content models
-- Error handling for network and parsing errors
-- Helper methods for common parsing operations
+- 🧠 Adaptive Learning: Learns from successful parses to improve future attempts
+- 🌐 Cross-Domain Support: Identifies common patterns across different domains
+- 🔄 Dynamic Adaptation: Adapts to changes in website structures over time
+- 📊 Confidence Scoring: Maintains confidence scores for different selectors
+- 💾 Persistent Learning: Saves learned patterns for future use
+- 🎯 Domain-Specific Patterns: Maintains specialized patterns for specific domains
 
 ## Installation
 
-Add the following to your `Package.swift` dependencies:
+Add HTMLSoups to your Swift package dependencies:
 
 ```swift
 dependencies: [
-    .package(url: "YOUR_REPOSITORY_URL", from: "1.0.0")
+    .package(url: "https://github.com/utahnews/HTMLSoups.git", from: "1.0.0")
 ]
 ```
 
 ## Usage
 
-### Basic Usage
-
 ```swift
-let parser = HTMLParser()
-
-// Create a configuration for parsing a specific website's structure
-let config = ArticleParserConfig(
-    titleSelector: "h1.article-title",
-    authorSelector: "span.author-name",
-    contentSelector: "div.article-content",
-    dateSelector: "time.published-date",
-    imageSelector: "img.article-image"
-)
+// Create an adaptive parser
+let parser = await AdaptiveParser()
 
 // Parse an article
-do {
-    let article = try await parser.parseArticle(
-        url: URL(string: "https://example.com/article")!,
-        config: config
-    )
-    
-    print("Title: \(article.title)")
-    print("Author: \(article.author ?? "Unknown")")
-    print("Content: \(article.content)")
-} catch {
-    print("Error: \(error)")
-}
+let url = URL(string: "https://example.com/article")!
+let article = try await parser.parseAndLearn(url)
+
+print("Title: \(article.title)")
+print("Content: \(article.content)")
 ```
 
-### Custom Content Models
+## Architecture
 
-You can create your own content models by conforming to the `HTMLContent` protocol:
+- `AdaptiveParser`: Main parser that adapts to different HTML structures
+- `SelectorLearner`: Learning system that discovers and maintains CSS selectors
+- `NewsParserConfig`: Configuration for parsing different types of content
+- `NetworkManager`: Handles network requests with proper error handling
 
-```swift
-struct ProductInfo: HTMLContent {
-    let sourceURL: URL
-    let name: String
-    let price: Decimal
-    let description: String
-    let specifications: [String: String]
-}
+## Testing
 
-extension HTMLParser {
-    func parseProduct(url: URL) async throws -> ProductInfo {
-        try await parse(url: url) { document in
-            // Your parsing logic here
-            let name = try extractText(from: document, selector: "h1.product-name")
-            let priceText = try extractText(from: document, selector: "span.price")
-            // ... more parsing ...
-            
-            return ProductInfo(
-                sourceURL: url,
-                name: name,
-                price: Decimal(string: priceText) ?? 0,
-                description: description,
-                specifications: specs
-            )
-        }
-    }
-}
+The package includes extensive tests covering:
+- Basic parsing functionality
+- Adaptive learning capabilities
+- Cross-domain pattern recognition
+- Learning persistence
+- Error handling
+
+Run tests using:
+```bash
+swift test
 ```
 
-## Error Handling
+## Dependencies
 
-The library provides specific error cases through `HTMLParsingError`:
-
-- `invalidURL`: The provided URL is not valid
-- `networkError`: Network-related errors during fetching
-- `parsingError`: HTML parsing errors
-- `invalidSelector`: Invalid CSS selector
-- `elementNotFound`: Element not found for the given selector
+- [SwiftSoup](https://github.com/scinfu/SwiftSoup): HTML parsing
+- [UtahNewsData](https://github.com/utahnews/UtahNewsData): Utah news data models
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+MIT License. See LICENSE file for details.
