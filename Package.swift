@@ -11,6 +11,9 @@ let package = Package(
         .library(
             name: "HTMLSoups",
             targets: ["HTMLSoups"]),
+        .library(
+            name: "HTMLSoupsUtahNews",
+            targets: ["HTMLSoupsUtahNews"]),
         .executable(
             name: "HTMLSoupsCLI",
             targets: ["HTMLSoupsCLI"])
@@ -21,22 +24,39 @@ let package = Package(
         .package(url: "https://github.com/utahnews/UtahNewsData.git", branch: "main")
     ],
     targets: [
+        // Core library target
         .target(
             name: "HTMLSoups",
             dependencies: [
                 "SwiftSoup"
             ]),
+        
+        // Utah news specific target
+        .target(
+            name: "HTMLSoupsUtahNews",
+            dependencies: [
+                "HTMLSoups",
+                .product(name: "UtahNewsData", package: "UtahNewsData")
+            ]),
+        
+        // CLI target
         .executableTarget(
             name: "HTMLSoupsCLI",
             dependencies: [
                 "HTMLSoups",
-                .product(name: "UtahNewsData", package: "UtahNewsData")
+                "HTMLSoupsUtahNews"
             ]),
+        
+        // Test targets
         .testTarget(
             name: "HTMLSoupsTests",
+            dependencies: ["HTMLSoups"]),
+        
+        .testTarget(
+            name: "HTMLSoupsUtahNewsTests",
             dependencies: [
-                "HTMLSoups",
+                "HTMLSoupsUtahNews",
                 .product(name: "UtahNewsData", package: "UtahNewsData")
-            ]),
+            ])
     ]
 ) 

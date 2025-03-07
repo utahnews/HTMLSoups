@@ -1,84 +1,73 @@
 import Foundation
 import HTMLSoups
+import HTMLSoupsUtahNews
 
+// Create parser instance
 let parser = await AdaptiveParser()
 
-if CommandLine.arguments.count > 1 {
-    let urlString = CommandLine.arguments[1]
-    
-    if urlString == "--help" || urlString == "-h" {
-        print("""
-        HTMLSoups CLI
-        
-        Usage:
-          htmlsoups <url>          Parse a single URL
-          htmlsoups --batch <file> Parse URLs from a file (one per line)
-          htmlsoups --help         Show this help message
-        """)
-        exit(0)
-    }
-    
-    if urlString == "--batch" {
-        guard CommandLine.arguments.count > 2 else {
-            print("Error: No file specified for batch processing")
-            exit(1)
-        }
-        
-        let filePath = CommandLine.arguments[2]
-        do {
-            let fileContents = try String(contentsOfFile: filePath, encoding: .utf8)
-            let urls = fileContents.components(separatedBy: .newlines)
-                .filter { !$0.isEmpty }
-                .compactMap { URL(string: $0) }
-            
-            for url in urls {
-                do {
-                    let mediaItem = try await parser.parseAndLearn(url)
-                    print("✅ Processed: \(url.lastPathComponent)")
-                    print("   Title: \(mediaItem.title)")
-                    if let date = mediaItem.publishDate {
-                        print("   Published: \(date)")
-                    }
-                } catch {
-                    print("❌ Failed to process \(url.lastPathComponent): \(error.localizedDescription)")
-                }
-            }
-        } catch {
-            print("Error reading file: \(error.localizedDescription)")
-            exit(1)
-        }
-    } else {
-        guard let url = URL(string: urlString) else {
-            print("Error: Invalid URL")
-            exit(1)
-        }
-        
-        do {
-            let startTime = Date()
-            let mediaItem = try await parser.parseAndLearn(url)
-            let duration = Date().timeIntervalSince(startTime)
-            
-            print("\n✅ Successfully parsed article")
-            print("Title: \(mediaItem.title)")
-            if let author = mediaItem.author {
-                print("Author: \(author)")
-            }
-            if let date = mediaItem.publishDate {
-                print("Published: \(date)")
-            }
-            print("\nProcessing time: \(String(format: "%.2f", duration))s")
-        } catch {
-            print("Error: \(error.localizedDescription)")
-            exit(1)
-        }
-    }
-} else {
-    print("Error: No URL provided")
-    print("Run 'htmlsoups --help' for usage information")
+// Parse command line arguments
+let args = CommandLine.arguments
+guard args.count >= 3 else {
+    print("Usage: HTMLSoupsCLI <command> <url>")
     exit(1)
 }
 
-dispatchMain()
+let command = args[1]
+let urlString = args[2]
+
+guard let url = URL(string: urlString) else {
+    print("Invalid URL: \(urlString)")
+    exit(1)
+}
+
+// Execute command
+do {
+    switch command {
+    case "parse":
+        print("Parsing \(url)...")
+        let article = try await parser.parseAndLearn(url) as Article
+        
+        print("\nResults:")
+        print("   Title: \(article.title)")
+        if let date = article.publishDate {
+            print("   Date: \(date)")
+        }
+        if let author = article.author {
+            print("   Author: \(author)")
+        }
+        print("   Content length: \(article.content.count) characters")
+        if !article.topics.isEmpty {
+            print("   Topics: \(article.topics.joined(separator: ", "))")
+        }
+        if !article.organizations.isEmpty {
+            print("   Organizations: \(article.organizations.joined(separator: ", "))")
+        }
+        if !article.locations.isEmpty {
+            print("   Locations: \(article.locations.joined(separator: ", "))")
+        }
+        
+    case "learn":
+        print("Learning from \(url)...")
+        let article = try await parser.parseAndLearn(url) as Article
+        
+        print("\nLearned patterns from:")
+        print("Title: \(article.title)")
+        if let author = article.author {
+            print("Author: \(author)")
+        }
+        if let date = article.publishDate {
+            print("Date: \(date)")
+        }
+        print("Content length: \(article.content.count) characters")
+        
+    default:
+        print("Unknown command: \(command)")
+        exit(1)
+    }
+} catch {
+    print("Error: \(error)")
+    exit(1)
+}
 
 func printUsage() {
     print("""
