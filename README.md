@@ -155,9 +155,59 @@ The package includes extensive tests covering:
 - Learning persistence
 - Error handling
 
-Run tests using:
+### Running Tests
+
+Basic test execution:
 ```bash
 swift test
+```
+
+### CLI Testing Tools
+
+The package includes CLI tools for testing parser functionality:
+
+```bash
+# Test parsing a specific URL
+swift run ParserTester parse "https://example.com/article"
+
+# Test parsing with learning enabled
+swift run ParserTester learn "https://example.com/article"
+
+# Test parsing multiple URLs from a domain
+swift run ParserTester domain "example.com" --count 5
+
+# Test cross-domain learning
+swift run ParserTester cross-domain \
+    "https://site1.com/article" \
+    "https://site2.com/article" \
+    "https://site3.com/article"
+
+# Save learning data after testing
+swift run ParserTester learn "https://example.com/article" --save
+
+# Load existing learning data for testing
+swift run ParserTester learn "https://example.com/article" --load
+
+# View detailed parsing results
+swift run ParserTester parse "https://example.com/article" --verbose
+```
+
+### Test Configuration
+
+You can configure test behavior using environment variables:
+
+```bash
+# Set timeout for network requests
+export HTMLSOUPS_TIMEOUT=30
+
+# Set user agent for requests
+export HTMLSOUPS_USER_AGENT="HTMLSoups/1.0"
+
+# Enable debug logging
+export HTMLSOUPS_DEBUG=1
+
+# Run tests with configuration
+HTMLSOUPS_DEBUG=1 swift run ParserTester parse "https://example.com/article"
 ```
 
 ## Dependencies
