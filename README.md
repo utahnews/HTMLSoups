@@ -1,6 +1,6 @@
 # HTMLSoups
 
-HTMLSoups is an adaptive HTML parsing library for Swift that learns and adapts to different website structures. It's specifically designed to handle news content from various Utah news sites, but can be adapted for other use cases.
+HTMLSoups is an adaptive HTML parsing library for Swift that learns and adapts to different website structures. It's specifically designed to handle content from various sites in Utah, but can be adapted for other use cases.
 
 ## Features
 
