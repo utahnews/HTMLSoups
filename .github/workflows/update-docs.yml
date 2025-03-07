@@ -1,0 +1,95 @@
+name: Update Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Sources/**/*.swift"
+      - "Tests/**/*.swift"
+      - "Package.swift"
+      - "README.md"
+      - ".github/workflows/update-docs.yml"
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Swift
+        uses: fwal/setup-swift@v1
+        with:
+          swift-version: "5.9"
+
+      - name: Install Dependencies
+        run: swift package resolve
+
+      - name: Update Documentation
+        run: |
+          # Create a temporary Swift script to analyze changes
+          cat > update_docs.swift << 'EOL'
+          import Foundation
+
+          // Get the list of changed files from git
+          let gitDiff = Process()
+          gitDiff.executableURL = URL(fileURLWithPath: "/usr/bin/git")
+          gitDiff.arguments = ["diff", "--name-only", "HEAD~1", "HEAD"]
+
+          let outputPipe = Pipe()
+          gitDiff.standardOutput = outputPipe
+
+          try gitDiff.run()
+          gitDiff.waitUntilExit()
+
+          let outputData = try outputPipe.fileHandleForReading.readToEnd() ?? Data()
+          let changedFiles = String(data: outputData, encoding: .utf8)?.components(separatedBy: .newlines) ?? []
+
+          // Filter for Swift files
+          let swiftFiles = changedFiles.filter { $0.hasSuffix(".swift") }
+
+          // Update ProjectOverview.swift if needed
+          if swiftFiles.contains(where: { $0.contains("Sources/HTMLSoups") }) {
+              let projectOverviewPath = "Sources/HTMLSoups/Documentation/ProjectOverview.swift"
+              var projectOverview = try String(contentsOfFile: projectOverviewPath, encoding: .utf8)
+              
+              // Update last modified date
+              let dateFormatter = DateFormatter()
+              dateFormatter.dateFormat = "yyyy-MM-dd"
+              let currentDate = dateFormatter.string(from: Date())
+              
+              if let dateRange = projectOverview.range(of: "Last Modified: .*") {
+                  projectOverview.replaceSubrange(dateRange, with: "Last Modified: \(currentDate)")
+              }
+              
+              try projectOverview.write(toFile: projectOverviewPath, atomically: true, encoding: .utf8)
+          }
+
+          // Update README.md if needed
+          if changedFiles.contains("README.md") {
+              let readmePath = "README.md"
+              var readme = try String(contentsOfFile: readmePath, encoding: .utf8)
+              
+              // Update last modified date
+              let dateFormatter = DateFormatter()
+              dateFormatter.dateFormat = "yyyy-MM-dd"
+              let currentDate = dateFormatter.string(from: Date())
+              
+              if let dateRange = readme.range(of: "Last Updated: .*") {
+                  readme.replaceSubrange(dateRange, with: "Last Updated: \(currentDate)")
+              }
+              
+              try readme.write(toFile: readmePath, atomically: true, encoding: .utf8)
+          }
+          EOL
+
+          # Run the Swift script
+          swift update_docs.swift
+
+      - name: Commit Documentation Updates
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add Sources/HTMLSoups/Documentation/ProjectOverview.swift README.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "docs: Update documentation for latest changes" && git push)

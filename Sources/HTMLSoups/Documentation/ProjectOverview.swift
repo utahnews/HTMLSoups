@@ -1,6 +1,10 @@
-/// ProjectOverview.swift
-/// This file provides a high-level overview of the HTMLSoups project structure and functionality.
-/// It serves as a quick reference for understanding the codebase's organization and key components.
+/// Project Overview
+///
+/// This file provides a comprehensive overview of the HTMLSoups project structure,
+/// its components, and their relationships. It serves as the central documentation
+/// for understanding the project's architecture and organization.
+///
+/// Last Modified: 2024-03-21
 ///
 /// Project Structure:
 /// 1. Core Components
