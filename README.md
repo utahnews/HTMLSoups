@@ -16,6 +16,7 @@ HTMLSoups is a powerful Swift package that provides intelligent HTML parsing and
 - Browser-like behavior
 - Persistent learning
 - Support for multiple news sources
+- Automatic documentation updates
 
 ## Installation
 
@@ -44,6 +45,14 @@ print(article.content)
 ## Documentation
 
 For detailed documentation, see the [Documentation](Sources/HTMLSoups/Documentation) directory.
+
+### Automatic Updates
+
+This project uses GitHub Actions to automatically update documentation when changes are made to the codebase. The following files are automatically maintained:
+
+- ProjectOverview.swift: Updated when source files change
+- README.md: Updated when documentation changes
+- File headers: Updated with last modified dates
 
 ## License
 
