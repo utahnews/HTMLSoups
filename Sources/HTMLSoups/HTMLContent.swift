@@ -1,3 +1,6 @@
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file defines the core protocols and types for HTML content parsing in HTMLSoups.
 /// It serves as the foundation for all content models in the library, providing a common
 /// interface that all parsed content must conform to. The file also defines error types

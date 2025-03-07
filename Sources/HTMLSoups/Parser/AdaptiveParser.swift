@@ -1,3 +1,6 @@
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file implements an adaptive parser for HTMLSoups that can learn and adapt
 /// to different website structures. It combines the selector learning system with
 /// content parsing to provide a flexible and robust parsing solution.

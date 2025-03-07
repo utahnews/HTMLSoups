@@ -1,3 +1,6 @@
+/// For a comprehensive overview of this file and its relationships with other components,
+/// see Sources/HTMLSoups/Documentation/ProjectOverview.swift
+///
 /// This file implements an intelligent selector learning system for HTMLSoups that
 /// automatically learns and adapts CSS selectors based on success rates and patterns
 /// found in web content. It handles dynamic content detection and provides a robust
