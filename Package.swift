@@ -17,20 +17,26 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.1"),
+        // Development/test dependencies
         .package(url: "https://github.com/utahnews/UtahNewsData.git", branch: "main")
     ],
     targets: [
         .target(
             name: "HTMLSoups",
             dependencies: [
-                "SwiftSoup",
-                .product(name: "UtahNewsData", package: "UtahNewsData")
+                "SwiftSoup"
             ]),
         .executableTarget(
             name: "HTMLSoupsCLI",
-            dependencies: ["HTMLSoups"]),
+            dependencies: [
+                "HTMLSoups",
+                .product(name: "UtahNewsData", package: "UtahNewsData")
+            ]),
         .testTarget(
             name: "HTMLSoupsTests",
-            dependencies: ["HTMLSoups"]),
+            dependencies: [
+                "HTMLSoups",
+                .product(name: "UtahNewsData", package: "UtahNewsData")
+            ]),
     ]
 ) 
