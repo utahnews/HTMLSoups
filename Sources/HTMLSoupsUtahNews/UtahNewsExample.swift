@@ -1,5 +1,6 @@
 import Foundation
 import SwiftSoup
+import HTMLSoups
 
 /// Example configurations for different Utah news websites
 public enum UtahNewsConfigs {

@@ -1,4 +1,5 @@
 import Foundation
+import HTMLSoups
 
 extension UtahNewsConfigs {
     /// Configuration for Fox 13 News articles
