@@ -202,11 +202,7 @@ final class SelectorLearnerTests: XCTestCase {
         )
         
         // Verify confidence increase
-        let confidence = learner.getSelectorConfidence(
-            "h1.headline",
-            contentType: "title",
-            domain: "confidence.com"
-        )
-        XCTAssertGreaterThan(confidence, 0.8, "Confidence should increase with successful uses")
+        let confidence = learner.getSelectorConfidence("h1.headline")
+        XCTAssertGreaterThan(confidence, 1.0, "Confidence should increase after successful use")
     }
 } 

@@ -10,7 +10,7 @@ public protocol HTMLContent: Codable {
 public enum HTMLParsingError: Error {
     case invalidURL
     case networkError(Error)
-    case parsingError(String)
+    case parsingError(Error)
     case invalidSelector(String)
     case elementNotFound(String)
 }

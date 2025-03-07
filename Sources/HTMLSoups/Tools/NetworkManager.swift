@@ -67,16 +67,17 @@ public class NetworkManager {
             throw HTMLParsingError.networkError(URLError(.badServerResponse))
         }
         
-        // Try to determine the text encoding from the Content-Type header
-        var encoding = String.Encoding.utf8
+        let encoding: String.Encoding
         if let contentType = httpResponse.value(forHTTPHeaderField: "Content-Type"),
            let charset = contentType.split(separator: "=").last,
-           let detectedEncoding = String.Encoding.fromCharset(String(charset)) {
+           let detectedEncoding = String.Encoding.from(charset: String(charset)) {
             encoding = detectedEncoding
+        } else {
+            encoding = .utf8
         }
         
         guard let html = String(data: data, encoding: encoding) else {
-            throw HTMLParsingError.parsingError("Failed to decode response data")
+            throw HTMLParsingError.parsingError(NSError(domain: "HTMLSoups", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode response data"]))
         }
         
         return html
@@ -155,11 +156,11 @@ public class NetworkManager {
 
 // Extension to support charset detection
 private extension String.Encoding {
-    static func fromCharset(_ charset: String) -> String.Encoding? {
-        switch charset.lowercased().trimmingCharacters(in: .whitespaces) {
+    static func from(charset: String) -> String.Encoding? {
+        switch charset.lowercased() {
         case "utf-8", "utf8":
             return .utf8
-        case "iso-8859-1", "iso8859-1":
+        case "iso-8859-1", "latin1":
             return .isoLatin1
         case "windows-1252":
             return .windowsCP1252

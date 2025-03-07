@@ -12,56 +12,48 @@ final class AdaptiveParserTests: XCTestCase {
         parser = nil
     }
     
-    func testLearningFromSingleArticle() async throws {
-        let url = URL(string: "https://www.deseret.com/sports/2025/03/06/alex-jensen-hired-utah-basketball-head-coach/")!
+    func testBasicParsing() async throws {
+        let url = URL(string: "https://www.fox13now.com/news/local-news/northern-utah/this-mansion-in-salt-lake-city-holds-part-of-slcs-beer-history-welcome-to-the-fisher-mansion")!
         
         // Parse and learn from the article
-        let parsedItem = try await parser.parseAndLearn(url: url)
-        let firstConfig = parser.getCurrentConfig()
+        let parsedItem = try await parser.parseAndLearn(url)
         
         // Verify basic parsing
         XCTAssertFalse(parsedItem.title.isEmpty, "Title should not be empty")
-        XCTAssertTrue(parsedItem.textContent?.count ?? 0 > 100, "Content should have meaningful length")
+        XCTAssertGreaterThan(parsedItem.content.count, 100, "Content should be substantial")
+        
+        // Verify that the parser learned and updated its configuration
+        let config = parser.getCurrentConfig()
+        XCTAssertFalse(config.titleSelector.isEmpty, "Title selector should be learned")
+        XCTAssertFalse(config.contentSelector.isEmpty, "Content selector should be learned")
     }
     
-    func testParsingMultipleStyles() async throws {
+    func testAdaptiveParsing() async throws {
         let urls = [
-            "https://www.lehifreepress.com/2025/03/06/lehi-real-estate-snapshot-february-2025/",
-            "https://www.deseret.com/sports/2025/03/06/alex-jensen-hired-utah-basketball-head-coach/",
-            "https://www.heraldextra.com/news/local/2025/mar/06/sr-92-in-provo-canyon-closes-after-2-vehicles-slide-off-into-river-near-sundance-resort/"
-        ].map { URL(string: $0)! }
-        
-        var successCount = 0
+            "https://www.fox13now.com/news/politics/dentist-shares-worries-concerns-for-kids-over-fluoride-removal-from-utahs-water",
+            "https://www.fox13now.com/news/local-news/northern-utah/this-mansion-in-salt-lake-city-holds-part-of-slcs-beer-history-welcome-to-the-fisher-mansion"
+        ].compactMap { URL(string: $0) }
         
         for url in urls {
             do {
-                let article = try await parser.parseAndLearn(url: url)
-                print("\n✅ Successfully parsed: \(url.absoluteString)")
+                let article = try await parser.parseAndLearn(url)
+                XCTAssertFalse(article.title.isEmpty, "Title should not be empty")
+                XCTAssertFalse(article.content.isEmpty, "Content should not be empty")
+                print("✅ Successfully parsed \(url.absoluteString.components(separatedBy: "://").last ?? url.absoluteString):")
                 print("Title: \(article.title)")
-                print("Content length: \(article.textContent?.count ?? 0) characters")
-                print("Current selectors:")
-                print("- Title: \(parser.getCurrentConfig().titleSelector)")
-                print("- Content: \(parser.getCurrentConfig().contentSelector)")
-                print("- Author: \(parser.getCurrentConfig().authorSelector ?? "none")")
-                print("---")
-                
-                if !article.title.isEmpty && article.textContent?.count ?? 0 > 100 {
-                    successCount += 1
-                }
+                print("Content length: \(article.content.count) characters")
             } catch {
-                print("\n❌ Failed to parse \(url.absoluteString): \(error)")
+                XCTFail("Failed to parse \(url.absoluteString): \(error)")
             }
         }
-        
-        XCTAssertGreaterThanOrEqual(successCount, 2, "Should successfully parse at least 2 out of 3 URLs")
     }
     
     func testLearningPersistence() async throws {
-        let url = URL(string: "https://www.deseret.com/sports/2025/03/06/alex-jensen-hired-utah-basketball-head-coach/")!
+        let url = URL(string: "https://www.fox13now.com/news/local-news/northern-utah/this-mansion-in-salt-lake-city-holds-part-of-slcs-beer-history-welcome-to-the-fisher-mansion")!
         
         // First parser instance
         let firstParser = await AdaptiveParser()
-        let firstArticle = try await firstParser.parseAndLearn(url: url)
+        _ = try await firstParser.parseAndLearn(url)
         let firstConfig = firstParser.getCurrentConfig()
         
         // Wait for Firebase to sync
@@ -69,50 +61,51 @@ final class AdaptiveParserTests: XCTestCase {
         
         // Second parser instance
         let secondParser = await AdaptiveParser()
-        let secondArticle = try await secondParser.parseAndLearn(url: url)
+        _ = try await secondParser.parseAndLearn(url)
         let secondConfig = secondParser.getCurrentConfig()
         
         print("\n🔄 Testing learning persistence:")
-        print("First parser config:")
+        print("First parser selectors:")
         print("- Title: \(firstConfig.titleSelector)")
         print("- Content: \(firstConfig.contentSelector)")
-        print("\nSecond parser config:")
+        print("\nSecond parser selectors:")
         print("- Title: \(secondConfig.titleSelector)")
         print("- Content: \(secondConfig.contentSelector)")
         
-        XCTAssertEqual(firstConfig.titleSelector, secondConfig.titleSelector)
-        XCTAssertEqual(firstConfig.contentSelector, secondConfig.contentSelector)
+        // Verify learning persistence
+        XCTAssertEqual(firstConfig.titleSelector, secondConfig.titleSelector, "Title selectors should match")
+        XCTAssertEqual(firstConfig.contentSelector, secondConfig.contentSelector, "Content selectors should match")
     }
     
-    func testCrossInstanceLearning() async throws {
+    func testCrossArticleLearning() async throws {
         let urls = [
-            "https://www.deseret.com/sports/2025/03/06/alex-jensen-hired-utah-basketball-head-coach/",
-            "https://www.deseret.com/sports/2025/03/04/byu-basketball-beats-iowa-state/"
-        ].map { URL(string: $0)! }
+            "https://www.fox13now.com/news/local-news/northern-utah/this-mansion-in-salt-lake-city-holds-part-of-slcs-beer-history-welcome-to-the-fisher-mansion",
+            "https://www.fox13now.com/news/politics/dentist-shares-worries-concerns-for-kids-over-fluoride-removal-from-utahs-water"
+        ].compactMap { URL(string: $0) }
         
         // First parser instance
         let firstParser = await AdaptiveParser()
-        let firstArticle = try await firstParser.parseAndLearn(url: urls[0])
-        let firstConfig = firstParser.getCurrentConfig()
+        let firstArticle = try await firstParser.parseAndLearn(urls[0])
         
         // Wait for Firebase to sync
         try await Task.sleep(nanoseconds: 2_000_000_000)  // 2 seconds
         
         // Second parser instance
         let secondParser = await AdaptiveParser()
-        let secondArticle = try await secondParser.parseAndLearn(url: urls[1])
+        let secondArticle = try await secondParser.parseAndLearn(urls[1])
         
         print("\n🔄 Testing cross-instance learning:")
-        print("First article (Parser 1):")
-        print("- Title: \(firstArticle.title)")
-        print("- Content length: \(firstArticle.textContent?.count ?? 0)")
-        print("\nSecond article (Parser 2):")
-        print("- Title: \(secondArticle.title)")
-        print("- Content length: \(secondArticle.textContent?.count ?? 0)")
+        print("First article:")
+        print("Title: \(firstArticle.title)")
+        print("Content length: \(firstArticle.content.count) characters")
+        print("\nSecond article:")
+        print("Title: \(secondArticle.title)")
+        print("Content length: \(secondArticle.content.count) characters")
         
-        XCTAssertFalse(firstArticle.title.isEmpty, "First article should have title")
-        XCTAssertFalse(secondArticle.title.isEmpty, "Second article should have title")
-        XCTAssertGreaterThan(firstArticle.textContent?.count ?? 0, 100, "First article should have content")
-        XCTAssertGreaterThan(secondArticle.textContent?.count ?? 0, 100, "Second article should have content")
+        // Verify both articles were parsed successfully
+        XCTAssertFalse(firstArticle.title.isEmpty, "First article title should not be empty")
+        XCTAssertFalse(secondArticle.title.isEmpty, "Second article title should not be empty")
+        XCTAssertGreaterThan(firstArticle.content.count, 100, "First article content should be substantial")
+        XCTAssertGreaterThan(secondArticle.content.count, 100, "Second article content should be substantial")
     }
 } 

@@ -2,14 +2,14 @@ import Foundation
 
 /// Configuration for parsing news content
 public struct NewsParserConfig {
-    public let titleSelector: String
-    public let contentSelector: String
-    public let authorSelector: String?
-    public let dateSelector: String?
-    public let imageSelectors: [String]
-    public let topicSelectors: [String]
-    public let organizationSelectors: [String]
-    public let locationSelectors: [String]
+    public var titleSelector: String
+    public var contentSelector: String
+    public var authorSelector: String?
+    public var dateSelector: String?
+    public var imageSelectors: [String]
+    public var topicSelectors: [String]
+    public var organizationSelectors: [String]
+    public var locationSelectors: [String]
     
     public init(
         titleSelector: String,

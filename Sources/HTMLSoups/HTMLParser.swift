@@ -48,7 +48,7 @@ public class HTMLParser {
             }
         }
         
-        throw lastError ?? HTMLParsingError.parsingError("Failed to parse content after \(maxRetries) attempts")
+        throw lastError ?? HTMLParsingError.parsingError(NSError(domain: "HTMLSoups", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to parse content after \(maxRetries) attempts"]))
     }
     
     /// Merges dynamic content into the main document
