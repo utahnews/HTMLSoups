@@ -1,9 +1,10 @@
 import Foundation
 import HTMLSoups
+import HTMLSoupsUtahNews
 
 private func buildConfig(for url: URL) -> HTMLParser.NewsParserConfig {
     let host = url.host ?? ""
-    
+
     if host.contains("fox13now.com") {
         return UtahNewsConfigs.fox13News()
     } else if host.contains("deseretnews.com") {
@@ -27,4 +28,4 @@ private func buildConfig(for url: URL) -> HTMLParser.NewsParserConfig {
             locationSelectors: [".location", "p em:first-of-type"]
         )
     }
-} 
+}
