@@ -17,27 +17,20 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.1"),
-        .package(url: "https://github.com/utahnews/UtahNewsData.git", branch: "main"),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "11.0.0")
+        .package(url: "https://github.com/utahnews/UtahNewsData.git", branch: "main")
     ],
     targets: [
         .target(
             name: "HTMLSoups",
             dependencies: [
                 "SwiftSoup",
-                .product(name: "UtahNewsData", package: "UtahNewsData"),
-                .product(name: "FirebaseCore", package: "firebase-ios-sdk"),
-                .product(name: "FirebaseFirestore", package: "firebase-ios-sdk")
+                .product(name: "UtahNewsData", package: "UtahNewsData")
             ]),
         .executableTarget(
             name: "HTMLSoupsCLI",
             dependencies: ["HTMLSoups"]),
         .testTarget(
             name: "HTMLSoupsTests",
-            dependencies: [
-                "HTMLSoups",
-                .product(name: "FirebaseCore", package: "firebase-ios-sdk"),
-                .product(name: "FirebaseFirestore", package: "firebase-ios-sdk")
-            ]),
+            dependencies: ["HTMLSoups"]),
     ]
 ) 
