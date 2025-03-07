@@ -1,6 +1,6 @@
 # HTMLSoups
 
-HTMLSoups is an adaptive HTML parsing library for Swift that learns and adapts to different website structures. It's specifically designed to handle content from various sites in Utah, but can be adapted for other use cases.
+HTMLSoups is an adaptive HTML parsing library for Swift that learns and adapts to different website structures. While originally designed for Utah news sites, it's a generic HTML parsing solution that can be adapted for any website content.
 
 ## Features
 
@@ -10,6 +10,7 @@ HTMLSoups is an adaptive HTML parsing library for Swift that learns and adapts t
 - 📊 Confidence Scoring: Maintains confidence scores for different selectors
 - 💾 Persistent Learning: Saves learned patterns for future use
 - 🎯 Domain-Specific Patterns: Maintains specialized patterns for specific domains
+- 🔌 Pluggable Content Models: Use built-in generic models or create custom ones
 
 ## Installation
 
@@ -23,28 +24,56 @@ dependencies: [
 
 ## Usage
 
-### Basic Usage
+### Basic Usage with Generic Content
+
+The simplest way to use HTMLSoups is with the built-in generic content model:
 
 ```swift
 import HTMLSoups
-import UtahNewsData
 
 // Create an adaptive parser
 let parser = await AdaptiveParser()
 
 // Parse an article
 let url = URL(string: "https://example.com/article")!
-let article = try await parser.parseAndLearn(url)
+let content = try await parser.parseAndLearn(url) as GenericHTMLContent
 
-print("Title: \(article.title)")
-print("Content: \(article.content)")
-print("Author: \(article.author ?? "Unknown")")
-print("Date: \(article.date ?? "Unknown")")
+// Access parsed data
+print("Title: \(content.data["title"] ?? "Unknown")")
+print("Content: \(content.data["content"] ?? "Unknown")")
+print("Author: \(content.data["author"] ?? "Unknown")")
+print("Date: \(content.data["date"] ?? "Unknown")")
+```
+
+### Custom Content Models
+
+You can create your own content models by conforming to `HTMLContent`:
+
+```swift
+// Define your custom content model
+struct NewsArticle: HTMLContent {
+    let sourceURL: URL
+    let headline: String
+    let body: String
+    let publishDate: Date?
+    let author: String?
+    
+    // Implement any additional functionality
+    var wordCount: Int {
+        body.split(separator: " ").count
+    }
+}
+
+// Use your custom model with the parser
+let parser = await AdaptiveParser()
+let article = try await parser.parseAndLearn(url) as NewsArticle
+print("Headline: \(article.headline)")
+print("Word count: \(article.wordCount)")
 ```
 
 ### Custom Configuration
 
-You can customize the parser with specific selectors:
+You can customize the parser with specific selectors for any content type:
 
 ```swift
 let config = NewsParserConfig(
@@ -80,9 +109,6 @@ for url in urls {
         print("Failed to parse \(url): \(error)")
     }
 }
-
-// The parser automatically learns and adjusts its selectors
-// based on successful parses
 ```
 
 ### Error Handling
@@ -138,6 +164,9 @@ let parser = await AdaptiveParser(networkConfig: config)
 3. **Configuration**: Start with specific selectors when you know the site structure, and let the parser adapt over time.
 4. **Validation**: Validate parsed content to ensure quality before using the results.
 5. **Rate Limiting**: Implement appropriate rate limiting when parsing multiple articles to respect website policies.
+6. **Content Models**: Choose between generic and custom content models based on your needs:
+   - Use `GenericHTMLContent` for quick prototyping or simple use cases
+   - Create custom models for type-safe, domain-specific content
 
 ## Architecture
 
@@ -145,6 +174,8 @@ let parser = await AdaptiveParser(networkConfig: config)
 - `SelectorLearner`: Learning system that discovers and maintains CSS selectors
 - `NewsParserConfig`: Configuration for parsing different types of content
 - `NetworkManager`: Handles network requests with proper error handling
+- `HTMLContent`: Protocol for creating custom content models
+- `GenericHTMLContent`: Built-in generic content model
 
 ## Testing
 
@@ -213,7 +244,6 @@ HTMLSOUPS_DEBUG=1 swift run ParserTester parse "https://example.com/article"
 ## Dependencies
 
 - [SwiftSoup](https://github.com/scinfu/SwiftSoup): HTML parsing
-- [UtahNewsData](https://github.com/utahnews/UtahNewsData): Utah news data models
 
 ## License
 
