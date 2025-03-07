@@ -25,7 +25,7 @@ do {
     switch command {
     case "parse":
         print("Parsing \(url)...")
-        let article = try await parser.parseAndLearn(url) as Article
+        let article = try await parser.parseAndLearn(url) as ArticleContent
         
         print("\nResults:")
         print("   Title: \(article.title)")
@@ -36,19 +36,13 @@ do {
             print("   Author: \(author)")
         }
         print("   Content length: \(article.content.count) characters")
-        if !article.topics.isEmpty {
-            print("   Topics: \(article.topics.joined(separator: ", "))")
-        }
-        if !article.organizations.isEmpty {
-            print("   Organizations: \(article.organizations.joined(separator: ", "))")
-        }
-        if !article.locations.isEmpty {
-            print("   Locations: \(article.locations.joined(separator: ", "))")
+        if !article.imageURLs.isEmpty {
+            print("   Images: \(article.imageURLs.count) found")
         }
         
     case "learn":
         print("Learning from \(url)...")
-        let article = try await parser.parseAndLearn(url) as Article
+        let article = try await parser.parseAndLearn(url) as ArticleContent
         
         print("\nLearned patterns from:")
         print("Title: \(article.title)")
