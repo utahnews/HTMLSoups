@@ -5,8 +5,8 @@ import HTMLSoups
 /// Example configurations for different Utah news websites
 public enum UtahNewsConfigs {
     /// Configuration for Deseret News articles
-    public static func deseretNews() -> HTMLParser.NewsParserConfig {
-        HTMLParser.NewsParserConfig(
+    public static func deseretNews() -> NewsParserConfig {
+        NewsParserConfig(
             titleSelector: "h1.headline",
             contentSelector: "div.article-body",
             authorSelector: "div.author-name",
@@ -19,8 +19,8 @@ public enum UtahNewsConfigs {
     }
     
     /// Configuration for Salt Lake Tribune articles
-    public static func saltLakeTribune() -> HTMLParser.NewsParserConfig {
-        HTMLParser.NewsParserConfig(
+    public static func saltLakeTribune() -> NewsParserConfig {
+        NewsParserConfig(
             titleSelector: "h1.article-title",
             contentSelector: "div.article-content",
             authorSelector: "div.byline a",
@@ -33,8 +33,8 @@ public enum UtahNewsConfigs {
     }
     
     /// Configuration for KSL News articles
-    public static func kslNews() -> HTMLParser.NewsParserConfig {
-        HTMLParser.NewsParserConfig(
+    public static func kslNews() -> NewsParserConfig {
+        NewsParserConfig(
             titleSelector: "h1.headline",
             contentSelector: "div.article-content",
             authorSelector: "div.author-block a",

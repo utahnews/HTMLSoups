@@ -3,8 +3,8 @@ import HTMLSoups
 
 extension UtahNewsConfigs {
     /// Configuration for Fox 13 News articles
-    public static func fox13News() -> HTMLParser.NewsParserConfig {
-        HTMLParser.NewsParserConfig(
+    public static func fox13News() -> NewsParserConfig {
+        NewsParserConfig(
             titleSelector: "h1",
             contentSelector: "article",
             authorSelector: "div.byline, span.author, .Article-author",
@@ -17,8 +17,8 @@ extension UtahNewsConfigs {
     }
     
     /// Configuration for Lehi Free Press articles
-    public static func lehiFreePress() -> HTMLParser.NewsParserConfig {
-        HTMLParser.NewsParserConfig(
+    public static func lehiFreePress() -> NewsParserConfig {
+        NewsParserConfig(
             titleSelector: "h1",
             contentSelector: ".entry-content, article",
             authorSelector: "span.meta-author a, .post-author, .byline, article .meta-author",
