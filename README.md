@@ -11,48 +11,50 @@ HTMLSoups is an adaptive HTML parsing library for Swift that learns and adapts t
 - 💾 Persistent Learning: Saves learned patterns for future use
 - 🎯 Domain-Specific Patterns: Maintains specialized patterns for specific domains
 - 🔌 Pluggable Content Models: Use built-in generic models or create custom ones
+- 🎨 Beautiful UI: Modern and intuitive interface for content extraction
+- 🔍 Smart Selector Learning: Automatically learns and adapts CSS selectors
+- 🛡️ Error Recovery: Robust error handling and recovery mechanisms
 
-## Package Structure
+## Project Structure
 
-HTMLSoups is organized into multiple targets to minimize dependencies:
+The project is organized into several key components:
 
-- **HTMLSoups**: Core library with generic HTML parsing capabilities
-- **HTMLSoupsUtahNews**: Optional extension for Utah news sites (requires UtahNewsData)
-- **HTMLSoupsCLI**: Command-line interface for testing and development
+### 1. Core Components
+- `HTMLContent.swift`: Base protocol for content extraction
+- `HTMLParser.swift`: Core HTML parsing engine
+- `Article.swift`: News article model with rich metadata
+
+### 2. Learning System
+- `SelectorLearner.swift`: Adaptive selector learning
+- `LearningStorage.swift`: Pattern persistence
+- `SelectorStorage.swift`: Selector management
+
+### 3. Parser Components
+- `AdaptiveParser.swift`: Main parsing system
+- `NewsParserConfig.swift`: Site-specific configurations
+
+### 4. Tools
+- `NetworkManager.swift`: HTTP request handling
+- `UserAgentManager.swift`: User agent rotation
+
+### 5. Extensions
+- `String+Extensions.swift`: HTML processing utilities
 
 ## Installation
 
-### Core Library Only
+### Swift Package Manager
 
-If you only need the generic HTML parsing capabilities:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/utahnews/HTMLSoups.git", from: "1.0.0")
-]
-
-// In your target dependencies:
-dependencies: ["HTMLSoups"]
-```
-
-### With Utah News Support
-
-If you need Utah news specific functionality:
+Add the following to your `Package.swift`:
 
 ```swift
 dependencies: [
     .package(url: "https://github.com/utahnews/HTMLSoups.git", from: "1.0.0")
 ]
-
-// In your target dependencies:
-dependencies: ["HTMLSoups", "HTMLSoupsUtahNews"]
 ```
 
 ## Usage
 
-### Basic Usage with Generic Article Model
-
-The core library provides a generic `Article` model for basic content parsing:
+### Basic Usage
 
 ```swift
 import HTMLSoups
@@ -62,13 +64,13 @@ let parser = await AdaptiveParser()
 
 // Parse an article
 let url = URL(string: "https://example.com/article")!
-let article = try await parser.parseAndLearn(url) as Article
+let article = try await parser.parseAndLearn(url)
 
 // Access parsed data
 print("Title: \(article.title)")
 print("Content: \(article.content)")
 print("Author: \(article.author ?? "Unknown")")
-print("Date: \(article.publishDate ?? Date())")
+print("Date: \(article.publishedDate ?? Date())")
 print("Topics: \(article.topics.joined(separator: ", "))")
 ```
 
@@ -79,135 +81,77 @@ Create your own content models by conforming to `HTMLContent`:
 ```swift
 struct BlogPost: HTMLContent {
     let sourceURL: URL
-    let headline: String
-    let body: String
-    let tags: [String]
-    let commentCount: Int
+    let title: String
+    let content: String
+    let author: String?
     
     // Add custom functionality
     var wordCount: Int {
-        body.split(separator: " ").count
+        content.split(separator: " ").count
     }
 }
-
-// Use your custom model
-let post = try await parser.parseAndLearn(url) as BlogPost
-print("Headline: \(post.headline)")
-print("Word count: \(post.wordCount)")
-```
-
-### Utah News Support (Optional)
-
-If you've included HTMLSoupsUtahNews, you can use Utah news specific features:
-
-```swift
-import HTMLSoups
-import HTMLSoupsUtahNews
-import UtahNewsData
-
-// Create a parser with Utah news configuration
-let parser = await AdaptiveParser()
-let mediaItem = try await parser.parseNewsContent(url: url)
-
-// Access Utah news specific data
-print("Title: \(mediaItem.title)")
-print("Organizations: \(mediaItem.relationships.filter { $0.type == .organization })")
-```
-
-### Custom Configuration
-
-Configure the parser with specific selectors:
-
-```swift
-let config = NewsParserConfig(
-    titleSelector: "h1.article-title",
-    contentSelector: "div.article-content",
-    authorSelector: "span.author-name",
-    dateSelector: "time.published-date",
-    imageSelectors: ["img.article-image"],
-    topicSelectors: ["span.topic"],
-    organizationSelectors: ["span.org-name"],
-    locationSelectors: ["span.location"]
-)
-
-let parser = await AdaptiveParser(config: config)
 ```
 
 ### Advanced Features
 
-#### Persistent Learning
+#### Adaptive Learning
 
 ```swift
-// Save learned patterns
-try await parser.saveLearnedPatterns()
+// The parser automatically learns from successful parses
+let parser = await AdaptiveParser()
+let article = try await parser.parseAndLearn(url)
 
-// Load previously learned patterns
-let parser = await AdaptiveParser(loadLearnedPatterns: true)
+// Access learned selectors
+let config = parser.getCurrentConfig()
+print("Title selector: \(config.titleSelector)")
+print("Content selector: \(config.contentSelector)")
 ```
 
-#### Custom Network Configuration
+#### Dynamic Content Handling
 
 ```swift
-let config = NetworkConfig(
-    timeout: 30,
-    cachePolicy: .returnCacheDataElseLoad,
-    headers: ["User-Agent": "HTMLSoups/1.0"]
-)
+// The parser automatically detects and handles dynamic content
+let parser = await AdaptiveParser()
+let article = try await parser.parseAndLearn(url)
 
-let parser = await AdaptiveParser(networkConfig: config)
+// The parser learns to handle loading indicators and dynamic updates
 ```
-
-## Best Practices
-
-1. **Start Simple**: Begin with the core HTMLSoups library and the generic Article model
-2. **Custom Models**: Create custom models only when you need specific functionality
-3. **Error Handling**: Implement proper error handling for network and parsing failures
-4. **Learning**: Allow the parser to learn from multiple sources within the same domain
-5. **Validation**: Validate parsed content before using the results
-6. **Rate Limiting**: Implement appropriate rate limiting when parsing multiple articles
 
 ## Testing
 
-### Unit Tests
+The project includes comprehensive tests:
 
 ```bash
-# Test core functionality
-swift test --target HTMLSoupsTests
+# Run all tests
+swift test
 
-# Test Utah news functionality (if available)
+# Run specific test targets
+swift test --target HTMLSoupsTests
 swift test --target HTMLSoupsUtahNewsTests
 ```
 
-### CLI Testing
-
-```bash
-# Parse a URL
-swift run HTMLSoupsCLI parse "https://example.com/article"
-
-# Learn from a URL
-swift run HTMLSoupsCLI learn "https://example.com/article"
-```
-
-### Test Configuration
-
-```bash
-# Set environment variables for testing
-export HTMLSOUPS_TIMEOUT=30
-export HTMLSOUPS_USER_AGENT="HTMLSoups/1.0"
-export HTMLSOUPS_DEBUG=1
-
-# Run with configuration
-HTMLSOUPS_DEBUG=1 swift run HTMLSoupsCLI parse "https://example.com/article"
-```
+Key test areas:
+- Selector learning and adaptation
+- Dynamic content handling
+- Cross-domain pattern recognition
+- Error recovery
+- Network request handling
+- Site-specific parsing (Fox13, UtahNews)
 
 ## Dependencies
 
-Core Library:
-- [SwiftSoup](https://github.com/scinfu/SwiftSoup): HTML parsing
+- SwiftSoup: HTML parsing
+- Foundation: Core functionality
+- Network: HTTP requests
 
-Optional (HTMLSoupsUtahNews only):
-- [UtahNewsData](https://github.com/utahnews/UtahNewsData): Utah news data models
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-MIT License. See LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
