@@ -18,13 +18,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Swift
-        uses: fwal/setup-swift@v1
-        with:
-          swift-version: "5.9"
+      - name: Install Swift
+        run: |
+          wget -q https://swift.org/builds/swift-5.9-release/ubuntu2204/swift-5.9-RELEASE/swift-5.9-RELEASE-ubuntu22.04.tar.gz
+          tar xzf swift-5.9-RELEASE-ubuntu22.04.tar.gz
+          echo "$(pwd)/swift-5.9-RELEASE-ubuntu22.04/usr/bin" >> $GITHUB_PATH
+
+      - name: Verify Swift Installation
+        run: |
+          swift --version
+          which swift
 
       - name: Install Dependencies
-        run: swift package resolve
+        run: |
+          swift package resolve
+          swift build
 
       - name: Debug Git Status
         run: |
