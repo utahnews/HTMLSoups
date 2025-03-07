@@ -1,3 +1,18 @@
+/// This file defines the core protocols and types for HTML content parsing in HTMLSoups.
+/// It serves as the foundation for all content models in the library, providing a common
+/// interface that all parsed content must conform to. The file also defines error types
+/// and a generic content model that can be used for basic parsing needs.
+///
+/// Key components:
+/// - HTMLContent: Protocol that all content models must implement
+/// - HTMLParsingError: Enumeration of possible parsing errors
+/// - GenericHTMLContent: A flexible content model for basic parsing needs
+///
+/// This file is used by:
+/// - Article.swift: Implements the HTMLContent protocol for article parsing
+/// - ArticleContent.swift: Provides example implementation of HTMLContent
+/// - AdaptiveParser.swift: Uses these types for parsing HTML content
+
 import Foundation
 
 /// Protocol that all parsed HTML content models must conform to
@@ -19,9 +34,9 @@ public enum HTMLParsingError: Error {
 public struct GenericHTMLContent: HTMLContent {
     public let sourceURL: URL
     public var data: [String: String]
-    
+
     public init(sourceURL: URL, data: [String: String]) {
         self.sourceURL = sourceURL
         self.data = data
     }
-} 
+}

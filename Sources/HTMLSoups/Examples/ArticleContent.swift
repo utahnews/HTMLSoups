@@ -1,3 +1,21 @@
+/// This file provides an example implementation of HTML content parsing in HTMLSoups,
+/// demonstrating how to create a custom content model and parser configuration.
+/// It serves as both documentation and a template for implementing custom parsers.
+///
+/// Key features:
+/// - Example implementation of HTMLContent protocol
+/// - Configurable parser structure
+/// - Support for common article components
+/// - Flexible selector configuration
+///
+/// This example is used by:
+/// - AdaptiveParser.swift: As a reference implementation
+/// - Article.swift: As a base for article parsing
+/// - NewsParserConfig.swift: For configuration examples
+///
+/// The file demonstrates best practices for implementing custom
+/// content models and parser configurations in HTMLSoups.
+
 import Foundation
 import SwiftSoup
 
@@ -9,8 +27,11 @@ public struct ArticleContent: HTMLContent {
     public let content: String
     public let publishDate: String?
     public let imageURLs: [URL]
-    
-    public init(sourceURL: URL, title: String, author: String?, content: String, publishDate: String?, imageURLs: [URL]) {
+
+    public init(
+        sourceURL: URL, title: String, author: String?, content: String, publishDate: String?,
+        imageURLs: [URL]
+    ) {
         self.sourceURL = sourceURL
         self.title = title
         self.author = author
@@ -27,7 +48,7 @@ public struct ArticleParserConfig {
     let contentSelector: String
     let dateSelector: String?
     let imageSelector: String
-    
+
     public init(
         titleSelector: String,
         authorSelector: String? = nil,
@@ -53,21 +74,21 @@ extension HTMLParser {
         try await parse(url: url) { document in
             let title = try self.extractText(from: document, selector: config.titleSelector)
             let content = try self.extractText(from: document, selector: config.contentSelector)
-            
+
             let author = try config.authorSelector.flatMap { selector in
                 try? self.extractText(from: document, selector: selector)
             }
-            
+
             let publishDate = try config.dateSelector.flatMap { selector in
                 try? self.extractText(from: document, selector: selector)
             }
-            
+
             let imageElements = try document.select(config.imageSelector)
             let imageURLs = try imageElements.compactMap { element in
                 let urlString = try element.attr("src")
                 return URL(string: urlString)
             }
-            
+
             return ArticleContent(
                 sourceURL: url,
                 title: title,
@@ -78,4 +99,4 @@ extension HTMLParser {
             )
         }
     }
-} 
+}

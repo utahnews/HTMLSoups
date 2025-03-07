@@ -1,3 +1,24 @@
+/// This file implements an intelligent selector learning system for HTMLSoups that
+/// automatically learns and adapts CSS selectors based on success rates and patterns
+/// found in web content. It handles dynamic content detection and provides a robust
+/// mechanism for storing and retrieving learned patterns.
+///
+/// Key features:
+/// - Automatic selector learning and adaptation
+/// - Dynamic content detection
+/// - Pattern storage and retrieval
+/// - Confidence scoring system
+/// - Domain-specific pattern learning
+///
+/// This system is used by:
+/// - AdaptiveParser.swift: For learning and applying selectors
+/// - HTMLParser.swift: For content extraction
+/// - SelectorStorage.swift: For persisting learned patterns
+///
+/// Dependencies:
+/// - LearningStorage.swift: For storing learned patterns
+/// - SwiftSoup: For HTML parsing and selector operations
+
 import Foundation
 import SwiftSoup
 

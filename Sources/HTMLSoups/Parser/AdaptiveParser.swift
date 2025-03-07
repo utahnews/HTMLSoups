@@ -1,3 +1,27 @@
+/// This file implements an adaptive parser for HTMLSoups that can learn and adapt
+/// to different website structures. It combines the selector learning system with
+/// content parsing to provide a flexible and robust parsing solution.
+///
+/// Key features:
+/// - Adaptive selector learning
+/// - Dynamic content handling
+/// - Configurable parsing rules
+/// - Error recovery
+/// - Content validation
+///
+/// This parser is used by:
+/// - Article.swift: For parsing article content
+/// - NewsParserConfig.swift: For configuration
+/// - SelectorLearner.swift: For learning patterns
+///
+/// Dependencies:
+/// - HTMLParser.swift: For content parsing
+/// - SelectorLearner.swift: For learning patterns
+/// - Article.swift: For content models
+///
+/// The parser implements an intelligent approach to content extraction,
+/// learning from successful patterns and adapting to different website structures.
+
 import Foundation
 import SwiftSoup
 import UtahNewsData
