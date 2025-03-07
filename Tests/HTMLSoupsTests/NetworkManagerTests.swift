@@ -1,3 +1,23 @@
+/// This file contains tests for the NetworkManager class, focusing on its ability to
+/// fetch and parse content from various news websites. The tests verify the network
+/// layer's functionality, including content fetching, parsing, and error handling
+/// across multiple Utah news sources.
+///
+/// Key test areas:
+/// - Multi-site content parsing
+/// - Error handling and recovery
+/// - Site-specific configurations
+/// - Content validation
+/// - Network request handling
+///
+/// Dependencies:
+/// - NetworkManager.swift: The main class being tested
+/// - HTMLParser.swift: For content parsing
+/// - NewsParserConfig.swift: For site-specific configurations
+///
+/// The tests cover a wide range of Utah news sources to ensure robust
+/// content extraction across different website structures.
+
 import XCTest
 
 @testable import HTMLSoups

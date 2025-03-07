@@ -1,3 +1,22 @@
+/// This file contains comprehensive tests for the SelectorLearner class, which is responsible
+/// for learning and adapting CSS selectors for HTML content extraction. The tests cover
+/// various aspects of the learning system including initial learning, dynamic content
+/// detection, cross-domain learning, and adaptation to site changes.
+///
+/// Key test areas:
+/// - Initial selector learning and persistence
+/// - Dynamic content detection and handling
+/// - Cross-domain pattern recognition
+/// - Site structure adaptation
+/// - Loading indicator handling
+/// - Selector confidence scoring
+/// - Complex dynamic content scenarios
+///
+/// Dependencies:
+/// - SelectorLearner.swift: The main class being tested
+/// - MockLearningStorage.swift: For mocking storage operations
+/// - SwiftSoup: For HTML parsing in tests
+
 import SwiftSoup
 import XCTest
 
