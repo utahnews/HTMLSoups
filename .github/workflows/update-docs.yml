@@ -18,6 +18,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            binutils \
+            git \
+            gnupg2 \
+            libc6-dev \
+            libcurl4-openssl-dev \
+            libedit2 \
+            libgcc-9-dev \
+            libpython3.8 \
+            libsqlite3-0 \
+            libstdc++-9-dev \
+            libxml2-dev \
+            libz3-dev \
+            pkg-config \
+            tzdata \
+            zlib1g-dev
+
       - name: Install Swift
         run: |
           wget -q https://swift.org/builds/swift-5.9-release/ubuntu2204/swift-5.9-RELEASE/swift-5.9-RELEASE-ubuntu22.04.tar.gz
@@ -31,8 +51,21 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          swift package resolve
-          swift build
+          echo "Current directory: $(pwd)"
+          echo "Directory contents:"
+          ls -la
+          echo "Attempting to resolve package dependencies..."
+          swift package resolve || {
+            echo "Package resolution failed. Checking for errors..."
+            cat .build/logs/*.log || true
+            exit 1
+          }
+          echo "Building package..."
+          swift build -v || {
+            echo "Build failed. Checking for errors..."
+            cat .build/logs/*.log || true
+            exit 1
+          }
 
       - name: Debug Git Status
         run: |
